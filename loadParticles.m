@@ -20,11 +20,16 @@ if strcmp(fileInfo.Variables(1).Name,'time') % hotstart
 else % source file
     ncid = netcdf.open(settings.SourceFilename,'NOWRITE');
 
-    p.id  = netcdf.getVar(ncid,0)';
-    p.lon = netcdf.getVar(ncid,1)';
-    p.lat = netcdf.getVar(ncid,2)';
-    p.releaseDate = netcdf.getVar(ncid,3)';
-    p.UNSD = netcdf.getVar(ncid,4)';
+    varid = netcdf.inqVarID(ncid,'id');
+    p.id  = netcdf.getVar(ncid,varid)';
+    varid = netcdf.inqVarID(ncid,'lon');
+    p.lon = netcdf.getVar(ncid,varid)';
+    varid = netcdf.inqVarID(ncid,'lat');
+    p.lat = netcdf.getVar(ncid,varid)';
+    varid = netcdf.inqVarID(ncid,'releaseDate');
+    p.releaseDate = netcdf.getVar(ncid,varid)';
+    varid = netcdf.inqVarID(ncid,'unsd');
+    p.UNSD = netcdf.getVar(ncid,varid)';
 
     p.np = length(p.id);
 

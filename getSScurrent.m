@@ -14,10 +14,13 @@ ufile = [settings.SScurrentPath 'u_' num2str(y) '_' num2str(m) '.nc'];
 vfile = [settings.SScurrentPath 'v_' num2str(y) '_' num2str(m) '.nc'];
 
 ncidu = netcdf.open(ufile,'NOWRITE') ;
-    time = netcdf.getVar(ncidu,0);
-    time = datenum(2000,12,31,0,0,0) + time; % hycom time convention
-    lon  = netcdf.getVar(ncidu,1);
-    lat  = netcdf.getVar(ncidu,2);
+varid = netcdf.inqVarID(ncidu,'time');
+time = netcdf.getVar(ncidu,varid);
+time = datenum(2000,12,31,0,0,0) + time; % hycom time convention
+varid = netcdf.inqVarID(ncidu,'lon');
+lon  = netcdf.getVar(ncidu,varid);
+varid = netcdf.inqVarID(ncidu,'lat');
+lat  = netcdf.getVar(ncidu,varid);
 netcdf.close(ncidu)
 
 pLon = p.lon;
@@ -57,10 +60,12 @@ dy=zeros(1,p.np);
 ncidu = netcdf.open(ufile,'NOWRITE') ;
 ncidv = netcdf.open(vfile,'NOWRITE') ;
 
-U   = netcdf.getVar( ncidu , 3 , [0,0,t] , [length(lon),length(lat),1] );
-V   = netcdf.getVar( ncidv , 3 , [0,0,t] , [length(lon),length(lat),1] );
-Udt = netcdf.getVar( ncidu , 3 , [0,0,tdt] , [length(lon),length(lat),1] );
-Vdt = netcdf.getVar( ncidv , 3 , [0,0,tdt] , [length(lon),length(lat),1] );
+varidu = netcdf.inqVarID(ncidu,'water_u');
+varidv = netcdf.inqVarID(ncidv,'water_v');
+U   = netcdf.getVar( ncidu , varidu , [0,0,t] , [length(lon),length(lat),1] );
+V   = netcdf.getVar( ncidv , varidv , [0,0,t] , [length(lon),length(lat),1] );
+Udt = netcdf.getVar( ncidu , varidu , [0,0,tdt] , [length(lon),length(lat),1] );
+Vdt = netcdf.getVar( ncidv , varidv , [0,0,tdt] , [length(lon),length(lat),1] );
 
 netcdf.close(ncidu)
 netcdf.close(ncidv)
